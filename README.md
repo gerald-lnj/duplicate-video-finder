@@ -1,4 +1,5 @@
 # duplicate-video-finder
+
 DuplicateFinder is a Python module (heavily WIP) to detect duplicate videos in a directory.
 
 ## Features
@@ -9,6 +10,11 @@ DuplicateFinder is a Python module (heavily WIP) to detect duplicate videos in a
 - [x] Multi file format support (mp4, mov, webm)
 - [ ] Interactive Manual CLI deletion
 - [ ] Auto deletion mode
+
+## Requirements
+
+- Python 3
+- ffprobe
 
 ## Usage Examples
 
@@ -21,23 +27,25 @@ import DuplicateFinder
 Create a new instance of DuplicateFnder:
 
 ``` Python
-duplicate_finder = DuplicateFinder('path_to_dir')
+duplicate_finder = DuplicateFinder("test-folder-here")
 ```
 
 Find duplicates:
 
 ``` Python
-DuplicateFinder.find_dups()
+duplicate_finder.find_dups()
 ```
 
 Show formatted results:
+
 ``` Python
-DuplicateFinder.get_results()
+duplicate_finder.get_results()
 ```
 
 ### Recursion
 
-Recursive searching is disabled by default. To enable it, when initialising DuplicateFInder, use:
+Recursive searching is disabled by default. To enable it, when initialising DuplicateFinder, use:
+
 ``` Python
 duplicate_finder = DuplicateFinder('path_to_dir', recursive=True)
 ```

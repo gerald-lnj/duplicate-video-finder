@@ -5,12 +5,13 @@ Supports recursive search in a folder.
 Separates videos into buckets of unique videos.
 """
 
+from io import BufferedReader
 from os import walk, path
 import subprocess
 import time
 import hashlib
 from collections import defaultdict
-# import pprint
+from typing import Callable
 
 
 def timeit(method):
@@ -37,7 +38,7 @@ class DuplicateFinder:
     https://stackoverflow.com/a/3593153
     """
 
-    def __init__(self, video_dir, recursive=False):
+    def __init__(self, video_dir: str, recursive: bool = False):
         """
         video_dir (String): Path to videos.
         recursive (Boolean): Toggle recursive search on/off. Default off.
@@ -99,7 +100,7 @@ class DuplicateFinder:
         )
         return float(result.stdout)
 
-    def chunk_reader(self, fobj, chunk_size=1024):
+    def chunk_reader(self, fobj: BufferedReader, chunk_size: int = 1024):
         """
         Generator that reads a file in chunks of bytes
         """
@@ -109,7 +110,12 @@ class DuplicateFinder:
                 return
             yield chunk
 
-    def get_hash(self, filename, first_chunk_only=False, hash_algo=hashlib.sha1):
+    def get_hash(
+        self,
+        filename: str,
+        first_chunk_only: bool = False,
+        hash_algo: Callable = hashlib.sha1,
+    ):
         """
         Gets the hash of either the first chunk of file or whole file.
         """
@@ -197,25 +203,27 @@ class DuplicateFinder:
         for bucket in self.buckets:
             for filepath in bucket[1:]:
                 flattened_dups.append(filepath)
+
         def to_keep(filepath):
             return filepath not in flattened_dups
-        self.videos_list = list(filter(to_keep, self.videos_list))
 
+        self.videos_list = list(filter(to_keep, self.videos_list))
 
         # self.advanced_dups()
 
     def get_results(self):
-        '''
+        """
         Prints detected duplicates in a formatted view.
-        '''
+        """
         dup_buckets = [bucket for bucket in self.buckets if len(bucket) > 1]
         deep_dup_len = sum([len(buckets) for buckets in dup_buckets])
-        print('{} duplicate files found\n'.format(deep_dup_len-len(dup_buckets)))
+        print("{} duplicate files found\n".format(deep_dup_len - len(dup_buckets)))
 
         for bucket in dup_buckets:
             for file_path in bucket:
-                print('- {}'.format(file_path))
-            print('\n')
+                print("- {}".format(file_path))
+            print("\n")
+
 
 if __name__ == "__main__":
     DUPLICATE_FINDER = DuplicateFinder("test-folder-here", True)
